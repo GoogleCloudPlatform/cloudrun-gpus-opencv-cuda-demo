@@ -1,0 +1,146 @@
+<!-- Copyright 2024 Google LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans+Display|Google+Sans:400,500|Google+Sans+Text:400,500&amp;display=swap" nonce="">
+    <title>OpenCV @ Cloud Run with Nvidia L4</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1 class="wrapper">Cloud Run GPUs with Nvidia L4</h1>
+    </header>
+    <main>
+        <div class="feature wrapper">
+            <div class="feature__container">
+                <div class="feature__options">
+                    <div class="group-input">
+                        <p>Capture device</p>
+                        <div id="input_device_selection"></div>
+                    </div>
+                    
+                    <div class="group-input">
+                        <label for="codec_select">Codec type</label>
+                        <div class="select-dropdown">
+                            <select id="codec_select"></select>
+                        </div>
+                    </div>
+                    
+                    <div class="group-input">
+                        <p>Processing device</p>
+                        <div class="input-radio">
+                            <input type="radio" name="pipeline" id="cpu" value="cpu">
+                            <label for="cpu">CPU</label>
+                        </div>
+                        <div class="input-radio">
+                            <input type="radio" name="pipeline" id="gpu" value="gpu" checked>
+                            <label for="gpu">GPU</label>
+                        </div>
+                    </div>
+
+                    <div class="group-input">
+                        <p>Post-processing</p>
+                        <div class="input-radio">
+                            <input type="radio" id="arrows" name="post_processing" value="arrows">
+                            <label for="arrows">Directional arrows</label>
+                        </div>
+                        <div class="input-radio">
+                            <input type="radio" id="heatmap" name="post_processing" value="heatmap">
+                            <label for="heatmap">Movement heatmap</label>
+                        </div>
+                        <div class="input-radio">
+                            <input type="radio" id="both" name="post_processing" value="both" checked>
+                            <label for="both">Both</label>
+                        </div>
+                    </div>
+                    
+                    <div class="group-input">
+                        <label for="post_processing">Video resolution</label>
+                        <div class="select-dropdown">
+                            <select id="video_resolution" class="select-dropdown">
+                                <option value="640x480">640x480 (4:3)</option>
+                                <option value="800x600" selected>800x600 (4:3)</option>
+                                <option value="1024x768">1024x768 (4:3)</option>
+                                <option value="960x540">960x540 (16:9)</option>
+                                <option value="1280x720">1280x720 (16:9)</option>
+                                <option value="1920x1080">1280x720 (16:9)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="feature__output">
+                    <div class="feature__video">
+                        <div class="feature__actions">
+                            <div>
+                                <video id="recording_origin" playsinline="true" autoplay muted></video>
+                                <button id="start_button" class="btn" type="button">&#9658; Start Recording</button>
+                            </div>
+                        </div>
+                        <div class="feature__result">
+                            <video id="recording_output" autoplay="true" controls>
+                                <source type="video/mp4" src="/static/sample.mp4"></source>
+                            </video>
+                            <button id="reset_button" class="outline" type="button">&#8635; Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="status wrapper" id="status_output">
+            <div class="status__container">
+                <div>
+                    <h3>Stats</h3>
+                    <div class="table_container">
+                        <table id="status_table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Processing device</th>
+                                    <th>Full pipeline (fps)</th>
+                                    <th>Optical flow (sec)</th>
+                                    <th>Optical flow (fps)</th>
+                                    <th>Post-processing (sec)</th>
+                                    <th>Pre-processing (sec)</th>
+                                    <th>Reading (sec)</th>
+                                    <th>Total time (sec)</th>
+                                    <th>Default video (fps)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </main>
+    
+    <footer>
+        <div  class="wrapper">
+            <img src="/static/images/google-cloud.svg" alt="Google Cloud">
+            <img src="/static/images/cloud-run.png" alt="Cloud Run">
+            <!-- <img src="/static/images/nvidia.png" alt="Nvidia"> -->
+        </div>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

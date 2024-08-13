@@ -1,0 +1,62 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+steps:
+- name: gcr.io/cloud-builders/docker
+  entrypoint: bash
+  args:
+    - -c
+    - docker pull ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_SERVICE_NAME}/${_SERVICE_NAME}:latest || exit 0
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', 
+        '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_SERVICE_NAME}/${_SERVICE_NAME}:latest', '.',
+        '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_SERVICE_NAME}/${_SERVICE_NAME}:$BUILD_ID' ,
+        '--cache-from', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_SERVICE_NAME}/${_SERVICE_NAME}:latest']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_SERVICE_NAME}/${_SERVICE_NAME}:$BUILD_ID']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['alpha', 'run', 'deploy', '${_SERVICE_NAME}', 
+        '--project', '$PROJECT_ID', 
+        '--image', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_SERVICE_NAME}/${_SERVICE_NAME}:$BUILD_ID', 
+        '--cpu', '${_CPU_QTY}', 
+        '--memory', '${_MEMORY}', 
+        '--gpu', '${_GPU_QTY}', 
+        '--no-cpu-throttling', 
+        '--gpu-type', '${_GPU}', 
+        '--max-instances', '${_MAX_INSTANCES}', 
+        '--region', '${_REGION}', 
+        '--execution-environment', 'gen2', 
+        '--allow-unauthenticated']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['beta', 'run', 'services', 'update', '${_SERVICE_NAME}', 
+        '--region', '${_REGION}', 
+        '--project', '$PROJECT_ID', 
+        '--add-volume', 'name=videos,type=cloud-storage,bucket=${_BUCKET}', 
+        '--add-volume-mount', 'volume=videos,mount-path=/app/videos']
+substitutions:
+  _BUCKET: cr-gpu-videos
+  _SERVICE_NAME: cr-gpu
+  _REGION: us-central1
+  _CPU_QTY: '8'
+  _GPU_QTY: '1'
+  _MAX_INSTANCES: '3'
+  _MEMORY: 32Gi
+  _GPU: nvidia-l4
+images:
+- ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_SERVICE_NAME}/${_SERVICE_NAME}:$BUILD_ID
+- ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_SERVICE_NAME}/${_SERVICE_NAME}:latest
+options:
+  machineType: 'N1_HIGHCPU_8'
