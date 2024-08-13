@@ -16,9 +16,9 @@ import cv2
 import numpy as np
 import logging
 import time
-from pipeline.pipeline_executor import PipelinePostProcessingOptions, ProcessingPipeline
+from pipeline.pipeline_executor import PipelinePostProcessingOptions, ProcessingPipelineAbstract
 
-class CPUProcessingPipeline(ProcessingPipeline):
+class CPUProcessingPipeline(ProcessingPipelineAbstract):
     timers = {
         "total": [],
         "read": [],

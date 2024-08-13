@@ -15,11 +15,8 @@
 import logging
 import cv2
 import copy
+import abc
 from enum import Enum
-
-class ProcessingPipelineInterface:
-    def process(self, video: str):
-        raise NotImplementedError("Method not implemented")
 
 class PipelineType(str, Enum):
     GPU = 'gpu'
@@ -31,8 +28,11 @@ class PipelinePostProcessingOptions(str, Enum):
     ARROWS = 'arrows'
     BOTH = 'both'
 
-class ProcessingPipeline(ProcessingPipelineInterface):
+class ProcessingPipelineAbstract():
+    __metaclass__ = abc.ABCMeta
+    
     def draw_flow_vectors(self, bgr_frame, flow):
+        """Generic vector drawing method (since it's only done on the CPU)"""
         vector_frame = copy.deepcopy(bgr_frame)
         step = 32
         h, w = bgr_frame.shape[:2]
@@ -43,9 +43,18 @@ class ProcessingPipeline(ProcessingPipelineInterface):
 
         return vector_frame
 
+    @abc.abstractmethod
+    def process(self, video: str):
+        """Pipeline specific processing method"""
+
+    @abc.abstractmethod
+    def draw_flow_heatmap(self):
+        """Pipeline specific flow heatmap method"""
+        return
+    
 class PipelineExecutor:
     @staticmethod
-    def execute(pipeline: ProcessingPipelineInterface, filepath: str):
+    def execute(pipeline: ProcessingPipelineAbstract, filepath: str):
 
         logging.info("Video for processing: %s", filepath)
 
