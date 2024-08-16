@@ -21,16 +21,36 @@
 
 ### Local Setup
 
-1. Clone this repository: `git clone git@github.com:NucleusEngineering/cloudrun-gpu-opencv-demo.git`
-2. Build the container with `docker build -t crgpu:latest .`
-3. Start the Docker containers: `docker run -p 8080:8080 bash crgpu:latest`
-4. Access the application at: http://localhost:8080   
+1. Clone this repository
+<pre><code>
+git clone git@github.com:NucleusEngineering/cloudrun-gpu-opencv-demo.git
+</code></pre>
+
+2. Build the container
+<pre><code>
+docker build -t crgpu:latest .
+</code></pre>
+
+3. Start the Docker containers
+<pre><code>
+docker run -p 8080:8080 bash crgpu:latest
+</code></pre>
+
+4. Access the application at: http://localhost:8080
 
 ### Deploying directly to Cloud Run
 
-1. Build the image via `docker build -t {GCP_REGION}-docker.pkg.dev/{YOUR_PROJECT_ID}/{YOUR_ARTIFACT_REGISTRY_NAME}/crgpu:latest .`
-2. Push the via `docker push {GCP_REGION}-docker.pkg.dev/{YOUR_PROJECT_ID}/{YOUR_ARTIFACT_REGISTRY_NAME}/crgpu:latest`
-3. Deploy via
+1. **Build the image**
+<pre><code>
+docker build -t {GCP_REGION}-docker.pkg.dev/{YOUR_PROJECT_ID}/{YOUR_ARTIFACT_REGISTRY_NAME}/crgpu:latest .
+</code></pre>
+
+2. **Push**
+<pre><code>
+docker push {GCP_REGION}-docker.pkg.dev/{YOUR_PROJECT_ID}/{YOUR_ARTIFACT_REGISTRY_NAME}/crgpu:latest
+</code></pre>
+
+3. **Deploy**
 <pre><code>
 gcloud alpha run deploy {YOUR_SERVICE_NAME} \
   --project {YOUR_PROJECT_ID} \
@@ -45,7 +65,8 @@ gcloud alpha run deploy {YOUR_SERVICE_NAME} \
   --execution-environment gen2 \
   --allow-unauthenticated
 </code></pre>
-4. (optional) Set GCP bucket as the storage backend via
+
+4. (optional) **Set GCP bucket as the storage backend**
 <pre><code>
 gcloud beta run services update {YOUR_SERVICE_NAME} \
   --project {YOUR_PROJECT_ID} \
@@ -54,13 +75,18 @@ gcloud beta run services update {YOUR_SERVICE_NAME} \
   --add-volume-mount volume=videos,mount-path=/app/videos \
 </code></pre>
 
-
 ### Deploying with Cloud Build / Cloud Deploy
 
 1. Create a GCS bucket (ideally in the same region where you will deploy this demo)
-2. In the root project folder, execute Cloud Build: `gcloud builds submit --config cloudbuild.yaml --substitutions _SERVICE_NAME=your-service-name,_REGION=your-gcp-region,_BUCKET=your-gcs-bucket-name`
-3. Get the URL where the demo was deployed: `gcloud run services list | grep -i crgpu`
-4. Check the available substitutions inside cloudbuild.yaml for more tailored configuration (`_CPU_QTY: '8'`,  `_GPU_QTY: '1'`, `_MAX_INSTANCES: '3'`, `_MEMORY: 32Gi`, `_GPU: nvidia-l4`)
+2. In the root project folder, execute Cloud Build
+<pre><code>
+gcloud builds submit --config cloudbuild.yaml --substitutions _SERVICE_NAME=your-service-name,_REGION=your-gcp-region,_BUCKET=your-gcs-bucket-name
+</code></pre>
+3. Get the URL where the demo was deployed
+<pre><code>
+gcloud run services list | grep -i crgpu
+</code></pre>
+4. Check the available substitutions inside `cloudbuild.yaml` for more tailored configuration (`_CPU_QTY: '8'`,  `_GPU_QTY: '1'`, `_MAX_INSTANCES: '3'`, `_MEMORY: 32Gi`, `_GPU: nvidia-l4`)
 
 ## Usage
 
