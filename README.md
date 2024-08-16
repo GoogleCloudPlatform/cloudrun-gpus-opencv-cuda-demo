@@ -22,13 +22,13 @@
 ### Local Setup
 
 1. Clone this repository: `git clone git@github.com:NucleusEngineering/cloudrun-gpu-opencv-demo.git`
-2. Build the container with `docker build -t crgpu:latest`
+2. Build the container with `docker build -t crgpu:latest .`
 3. Start the Docker containers: `docker run -p 8080:8080 bash crgpu:latest`
 4. Access the application at: http://localhost:8080   
 
 ### Deploying directly to Cloud Run
 
-1. Build the image via `docker build -t {GCP_REGION}-docker.pkg.dev/{YOUR_PROJECT_ID}/{YOUR_ARTIFACT_REGISTRY_NAME}/crgpu:latest`
+1. Build the image via `docker build -t {GCP_REGION}-docker.pkg.dev/{YOUR_PROJECT_ID}/{YOUR_ARTIFACT_REGISTRY_NAME}/crgpu:latest .`
 2. Push the via `docker push {GCP_REGION}-docker.pkg.dev/{YOUR_PROJECT_ID}/{YOUR_ARTIFACT_REGISTRY_NAME}/crgpu:latest`
 3. Deploy via
 <pre><code>
