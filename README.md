@@ -32,26 +32,26 @@
 2. Push the via `docker push {GCP_REGION}-docker.pkg.dev/{YOUR_PROJECT_ID}/{YOUR_ARTIFACT_REGISTRY_NAME}/crgpu:latest`
 3. Deploy via
 <pre><code>
-gcloud alpha run deploy {YOUR_SERVICE_NAME}
-        --project {YOUR_PROJECT_ID}
-        --image  {GCP_REGION}-docker.pkg.dev/{YOUR_PROJECT_ID}/{YOUR_ARTIFACT_REGISTRY_NAME}/crgpu:latest
-        --cpu  {CPU_QTY}
-        --memory  {MEMORY}
-        --gpu  {GPU_QTY}
-        --no-cpu-throttling
-        --gpu-type  {GPU}
-        --max-instances  {MAX_INSTANCES}
-        --region  {GCP_REGION}
-        --execution-environment gen2
-        --allow-unauthenticated
+gcloud alpha run deploy {YOUR_SERVICE_NAME} \
+  --project {YOUR_PROJECT_ID} \
+  --image {GCP_REGION}-docker.pkg.dev/{YOUR_PROJECT_ID}/{YOUR_ARTIFACT_REGISTRY_NAME}/crgpu:latest \
+  --cpu {CPU_QTY} \
+  --memory {MEMORY} \
+  --gpu {GPU_QTY} \
+  --no-cpu-throttling \
+  --gpu-type {GPU} \
+  --max-instances {MAX_INSTANCES} \
+  --region {GCP_REGION} \
+  --execution-environment gen2 \
+  --allow-unauthenticated
 </code></pre>
 4. (optional) Set GCP bucket as the storage backend via
 <pre><code>
-gcloud beta run services update {YOUR_SERVICE_NAME}
-        --project {YOUR_PROJECT_ID}
-        --region  {GCP_REGION}
-        --add-volume name=videos,type=cloud-storage,bucket=${YOUR_GCP_BUCKET_NAME}
-        --add-volume-mount volume=videos,mount-path=/app/videos
+gcloud beta run services update {YOUR_SERVICE_NAME} \
+  --project {YOUR_PROJECT_ID} \
+  --region {GCP_REGION} \
+  --add-volume name=videos,type=cloud-storage,bucket=${YOUR_GCP_BUCKET_NAME} \
+  --add-volume-mount volume=videos,mount-path=/app/videos \
 </code></pre>
 
 
